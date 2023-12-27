@@ -22,7 +22,7 @@ vec3 addShadow(in vec3 color, in float distance_to_circle) {
 }
 
 vec3 addWaves(in vec3 color, in float distance_to_circle) {
-    return color * .8 + color * .2 * sin(300. * distance_to_circle -  10. * u_time);
+    return color * .8 + color * .2 * sin(300. * distance_to_circle - 10. * u_time);
 }
 
 vec3 addWhiteOutline(in vec3 color, in float distance_to_circle) {
@@ -34,14 +34,14 @@ void main() {
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
     st *= 2.;
     st -= 1.;
-    vec2 center = (u_mouse/u_resolution.xy) * 2. - 1.;
+    vec2 center = (u_mouse / u_resolution.xy) * 2. - 1.;
     // vec2 center = vec2(0.);
     float radius = .4;
 
     float distance_to_circle = sdfCircle(st - center, radius);
 
     vec3 color = getColor(distance_to_circle);
-    color = addShadow(color, distance_to_circle);    
+    color = addShadow(color, distance_to_circle);
     color = addWaves(color, distance_to_circle);
     // color = addWhiteOutline(color, distance_to_circle);
 
