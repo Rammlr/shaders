@@ -27,8 +27,8 @@ float noise(in vec2 st) {
         (d - b) * u.x * u.y;
 }
 
-#define OCTAVES 10
-float fbm(in vec2 st) {
+#define OCTAVES 7
+float fbm_original(in vec2 st) {
     float value = 0.0;
     float amplitude = .5;
     float frequency = 0.;
@@ -41,7 +41,7 @@ float fbm(in vec2 st) {
     return value;
 }
 
-float fbm_improved(in vec2 _st) {
+float fbm(in vec2 _st) {
     float v = 0.0;
     float a = 0.5;
     vec2 shift = vec2(100.0);
@@ -55,14 +55,31 @@ float fbm_improved(in vec2 _st) {
     return v;
 }
 
+float pattern(in vec2 p, out vec2 q, out vec2 r) {
+    q.x = fbm(p + vec2(3.0, -2.0));
+    q.y = fbm(p + vec2(-2.2, 1.3));
+
+    r.x = fbm(p + 2.0 * q + vec2(1.7, 1.2));
+    r.y = fbm(p + 3.0 * q + vec2(1.3, 0.8));
+    mat2 rot = mat2(.5) + .1 * (cos(.3 * u_time)) * mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
+
+    return fbm(p + 4.0 * r * rot);
+}
+
 void main() {
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
 
     vec2 q, r;
 
     vec3 color = vec3(0.0);
-    // color += fbm(st * 3.0);
-    color += fbm_improved(st * 3.0);
+    float f = pattern(st * 5., q, r);
 
-    gl_FragColor = vec4(color, 1.0);
+    color = mix(vec3(0.8745, 0.3333, 0.0824), vec3(0.2275, 0.5059, 0.9216), clamp(f, 0.0, 1.0));
+
+    color = mix(color, vec3(0.0941, 0.5686, 0.1176), clamp(length(q), 0.0, 1.0));
+
+    color = mix(color, vec3(0.1647, 0.9412, 0.3333), clamp(length(r.x), 0.0, 1.0));
+
+    float modifier = (.6 * f + .5 * f);
+    gl_FragColor = vec4(modifier * color, 1.0);
 }
