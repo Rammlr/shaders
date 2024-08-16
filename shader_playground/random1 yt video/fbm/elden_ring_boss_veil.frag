@@ -75,7 +75,7 @@ void main() {
     vec3 color = vec3(0.0);
     float f = pattern(st * 10., q, r);
 
-    color = mix(vec3(0.6118, 0.7255, 0.0941), vec3(0.9412, 0.8863, 0.149), clamp(f, 0.0, 1.0));
+    color = mix(vec3(0.6118, 0.7255, 0.0941), vec3(0.9412, 0.8863, 0.149), clamp(f, 0.5, 1.0));
 
     color = mix(color, vec3(0.8392, 0.7137, 0.0), clamp(length(q), 0.0, 1.0));
 
